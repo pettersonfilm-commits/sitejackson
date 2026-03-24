@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="antialiased">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderno Locações</title>
+    <link rel="icon" type="image/png" href="./assets/LOGO SEM FUNDO.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#00275E',       /* Brand Blue */
+                            blueLight: '#0042A6',  /* Border/Glow Blue */
+                            yellow: '#EEBA00',     /* Brand Yellow */
+                            black: '#343532',      /* Brand Black */
+                            bgDeep: '#000000',     /* Background Pure Black */
+                            surface: '#001533',    /* Cards/Panels */
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Lastica', 'Arial Black', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    },
+                    backgroundImage: {
+                        'tech-grid': 'linear-gradient(rgba(0, 66, 166, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 66, 166, 0.1) 1px, transparent 1px)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Tipografia Customizada (Lastica) */
+        @font-face {
+            font-family: 'Lastica';
+            src: local('Lastica'), local('LASTICA'), url('https://fonts.cdnfonts.com/s/72225/Lastica.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* Utilidades Base */
+        body {
+            background-color: #000000;
+            color: #F0F6FF;
+            overflow-x: hidden;
+        }
+
+        /* Máscara radial para fundir a imagem com o fundo suavemente */
+        .mask-radial {
+            -webkit-mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 70%);
+            mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 70%);
+        }
+
+        /* Máscara de grid para background */
+        .mask-grid {
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+            background-size: 40px 40px;
+        }
+
+        /* Efeito Glow Tonal » Glassmorphism */
+        .glass-panel {
+            background: rgba(0, 21, 51, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 66, 166, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 11, 26, 0.8);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(238, 186, 0, 0.4);
+            box-shadow: 0 0 20px rgba(238, 186, 0, 0.1), inset 0 0 10px rgba(0, 66, 166, 0.2);
+        }
+
+        /* Card Tech (Premium Trust Badges & Showcase) */
+        .card-tech {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.005) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            backface-visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .card-tech::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, #EEBA00 0%, transparent 50%, #0042A6 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .card-tech:hover {
+            transform: translateY(-5px);
+            background: rgba(238, 186, 0, 0.05);
+            border-color: transparent;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.02);
+        }
+
+        .card-tech:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon-tech {
+            color: #EEBA00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-tech:hover .card-icon-tech {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 10px rgba(238, 186, 0, 0.6));
+        }
+
+        /* Texto com Glow amarelado */
+        .text-glow-yellow {
+            text-shadow: 0 0 15px rgba(238, 186, 0, 0.6);
+        }
+
+        /* Botão Magnético Tech */
+        .btn-tech {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-tech::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-20deg);
+            z-index: 1;
+            transition: 0s;
+        }
+
+        .btn-tech:hover {
+            background-color: #FFD433;
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(238, 186, 0, 0.5);
+        }
+
+        .btn-tech:hover::before {
+            left: 200%;
+            transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Stagger Initial State */
+        .gsap-rev {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Infinite Marquee */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marquee 40s linear infinite;
+        }
+
+        /* Tech Canvas Background Elements */
+        #interactive-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            background: #000000;
+        }
+
+        .tech-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(0, 82, 204, 0.45) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 82, 204, 0.45) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 80%);
+            opacity: 0.85;
+            transition: opacity 0.4s;
+        }
+    </style>
+</head>
+
+<body class="relative min-h-screen">
+
+    <!-- 1. INTERACTIVE BACKGROUND (TECH CANVAS E GRID) -->
+    <canvas id="interactive-bg"></canvas>
+    <div class="tech-grid"></div>
+
+    <!-- 2. NAVBAR (DASHBOARD HEADER) -->
+    <header
+        class="fixed top-0 w-full z-50 border-b border-brand-yellow/10 bg-[#000000]/40 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-all duration-300">
+        <div
+            class="relative max-w-[1600px] mx-auto px-4 lg:px-12 py-3 md:py-4 flex justify-between items-center min-h-[60px] md:min-h-[72px]">
+
+            <!-- Left Logo -->
+            <a href="#" class="hidden md:flex items-center group relative z-10">
+                <img src="./assets/LOGO SEM FUNDO.png" alt="Roto Rent Ícone"
+                    class="h-8 md:h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105 filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+            </a>
+
+            <!-- Logo (Centered) -->
+            <a href="#"
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center group z-10">
+                <!-- Brand Image -->
+                <img src="./assets/LOGO SEM FUNDO branca texto.png" alt="Roto Rent Logo Completa"
+                    class="h-8 sm:h-10 md:h-16 lg:h-[4.5rem] w-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105 filter drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]">
+            </a>
+
+            <!-- CTA (Right aligned) -->
+            <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer"
+                class="ml-auto font-mono text-[9px] md:text-[11px] font-bold tracking-[0.1em] md:tracking-[0.2em] px-4 py-2 md:px-8 md:py-3.5 border border-brand-yellow text-brand-yellow transition-all duration-400 rounded-sm flex items-center gap-2 md:gap-3 group relative z-10 bg-black/20 hover:shadow-[inset_0_0_20px_rgba(238,186,0,0.15),0_0_20px_rgba(238,186,0,0.3)] hover:scale-[1.02] backdrop-blur-sm">
+                <i
+                    class="ph-light ph-whatsapp-logo text-[1.1rem] md:text-[1.2rem] transition-all duration-400 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(238,186,0,0.8)]"></i>
+                <span
+                    class="group-hover:drop-shadow-[0_0_8px_rgba(238,186,0,0.8)] transition-all duration-400">WHATSAPP</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- 3. MAIN HERO SECTION -->
+    <main class="relative z-10 flex flex-col min-h-screen items-center justify-center pt-24 pb-0 overflow-x-hidden">
+        <div
+            class="flex-1 max-w-[1600px] w-full mx-auto px-6 lg:px-12 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center py-12">
+
+            <!-- LEFT COLUMN: CONTENT (Span 7) -->
+            <div class="lg:col-span-7 flex flex-col gap-8 relative z-20">
+
+                <!-- HEADLINE -->
+                <h1 class="font-display text-5xl lg:text-[4.5rem] leading-[0.95] tracking-tight text-white gsap-rev whitespace-pre-line"
+                    data-anim="fade-up">POTÊNCIA
+                    <span
+                        class="text-brand-blue bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow to-yellow-600 drop-shadow-[0_0_15px_rgba(238,186,0,0.6)]">INDUSTRIAL</span>
+                    AO SEU ALCANCE
+                </h1>
+
+                <!-- SUBHEADLINE -->
+                <p class="font-sans text-lg lg:text-xl text-[#8AA4C4] max-w-xl font-light leading-relaxed border-l-2 border-brand-yellow pl-5 py-1 bg-gradient-to-r from-brand-yellow/5 to-transparent gsap-rev"
+                    data-anim="fade-up">
+                    Soluções brutas em locação de equipamentos de construção. Rentabilidade, agilidade logística e
+                    <strong>performance implacável</strong> para escalar a sua obra sem interrupções.
+                </p>
+
+                <!-- TRUST BADGES (DASHBOARD PANELS) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl gsap-rev" data-anim="fade-up">
+                    <div class="card-tech">
+                        <div class="card-icon-tech"><i class="ph-duotone ph-rocket"></i></div>
+                        <div>
+                            <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">
+                                LOGÍSTICA</p>
+                            <p class="font-sans text-sm font-semibold">Entrega < 24h</p>
+                        </div>
+                    </div>
+                    <div class="card-tech">
+                        <div class="card-icon-tech"><i class="ph-duotone ph-sparkle"></i></div>
+                        <div>
+                            <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">
+                                QUALIDADE</p>
+                            <p class="font-sans text-sm font-semibold">Limpos & Novos</p>
+                        </div>
+                    </div>
+                    <div class="card-tech">
+                        <div class="card-icon-tech"><i class="ph-duotone ph-users-three"></i></div>
+                        <div>
+                            <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">
+                                SUPORTE</p>
+                            <p class="font-sans text-sm font-semibold">Apoio Humanizado</p>
+                        </div>
+                    </div>
+                    <div class="card-tech">
+                        <div class="card-icon-tech"><i class="ph-duotone ph-cpu"></i></div>
+                        <div>
+                            <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">
+                                TECNOLOGIA</p>
+                            <p class="font-sans text-sm font-semibold">Consultoria Técnica</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="mt-4 gsap-rev" data-anim="fade-up">
+                    <button
+                        class="btn-tech bg-brand-yellow text-brand-bgDeep font-mono font-bold text-sm tracking-widest px-8 py-4 rounded-sm flex items-center gap-3 shrink-0">
+                        ALUGAR AGORA <i class="ph-bold ph-arrow-right text-lg"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: IMAGE (Span 5) -->
+            <div class="lg:col-span-5 relative h-full min-h-[500px] flex items-center justify-center gsap-rev"
+                data-anim="fade-in">
+
+                <!-- Glow Atrás da Imagem Removido -->
+
+                <!-- Tech Frame e Imagem -->
+                <div class="relative w-full max-w-lg aspect-[4/5] glass-panel p-2 rounded-xl group">
+
+                    <!-- Bordas Cibernéticas / Target UI -->
+                    <div
+                        class="absolute -top-4 -left-4 w-12 h-12 border-t-2 border-l-2 border-brand-yellow opacity-50 transition-all duration-500 group-hover:opacity-100 group-hover:-translate-x-2 group-hover:-translate-y-2">
+                    </div>
+                    <div
+                        class="absolute -bottom-4 -right-4 w-12 h-12 border-b-2 border-r-2 border-brand-yellow opacity-50 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-2 group-hover:translate-y-2">
+                    </div>
+
+
+
+                    <div class="absolute bottom-6 right-6 z-20 flex items-center gap-2">
+                        <div class="w-1.5 h-6 bg-brand-yellow blur-[1px]"></div>
+                        <div class="w-1.5 h-4 bg-brand-yellow/60"></div>
+                        <div class="w-1.5 h-8 bg-brand-yellow/30"></div>
+                        <div class="w-1.5 h-5 bg-brand-blueLight"></div>
+                    </div>
+
+                    <!-- Imagem Principal Local -->
+                    <div class="w-full h-full relative overflow-hidden rounded-lg bg-transparent">
+                        <img src="assets/Whisk_4ab8eaf640b40e6bb8b434286db65ae8dr.png"
+                            alt="Equipamento Martelete ROTO RENT"
+                            class="absolute inset-0 w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700 ease-out z-10">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tech Product Marquee (Faixa Amarela Full Width Garantida) -->
+        <div class="w-full relative overflow-hidden bg-brand-yellow/10 backdrop-blur-md py-4 flex shadow-[0_0_20px_rgba(238,186,0,0.2)] transition-all duration-500 hover:shadow-[0_0_50px_rgba(238,186,0,0.6)] hover:bg-brand-yellow/20 border-y border-brand-yellow/40 cursor-default z-30 gsap-rev"
+            data-anim="fade-up">
+
+            <!-- Brilho no topo do vidro -->
+            <div
+                class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-yellow/50 to-transparent">
+            </div>
+
+            <!-- Pseudo-elementos para gradient nas pontas usando black -->
+            <div
+                class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none">
+            </div>
+            <div
+                class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none">
+            </div>
+
+            <div class="animate-marquee flex text-brand-yellow drop-shadow-[0_0_10px_rgba(238,186,0,0.8)]">
+                <!-- Bloco 1 -->
+                <div
+                    class="flex gap-12 px-6 items-center font-mono text-sm tracking-widest font-bold whitespace-nowrap">
+                    <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>BETONEIRA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ANDAIME <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GERADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>COMPRESSOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ELEVADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GUINCHO <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>PLATAFORMA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <!-- Repetição Interna 2 -->
+                    <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>BETONEIRA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ANDAIME <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GERADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>COMPRESSOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ELEVADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GUINCHO <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>PLATAFORMA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <!-- Repetição Interna 3 -->
+                    <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>BETONEIRA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ANDAIME <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GERADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>COMPRESSOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ELEVADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GUINCHO <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>PLATAFORMA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                </div>
+                <!-- Bloco 2 (Clone Exato do Bloco 1) -->
+                <div
+                    class="flex gap-12 px-6 items-center font-mono text-sm tracking-widest font-bold whitespace-nowrap">
+                    <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>BETONEIRA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ANDAIME <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GERADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>COMPRESSOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ELEVADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GUINCHO <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>PLATAFORMA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <!-- Repetição Interna 2 -->
+                    <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>BETONEIRA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ANDAIME <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GERADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>COMPRESSOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ELEVADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GUINCHO <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>PLATAFORMA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <!-- Repetição Interna 3 -->
+                    <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>BETONEIRA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ANDAIME <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GERADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>COMPRESSOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>ELEVADOR <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>GUINCHO <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                    <span>PLATAFORMA <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 2ª DOBRA: EQUIPAMENTOS (SHOWCASE) -->
+    <section id="equipamentos" class="relative py-24 md:py-32 z-10 border-t border-brand-yellow/10 bg-transparent">
+
+        <!-- Luzes Ambientes para Refração do Vidro -->
+        <div
+            class="absolute top-1/4 left-0 w-[40rem] h-[40rem] bg-brand-yellow/10 rounded-full blur-[140px] pointer-events-none mix-blend-screen -z-10">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 w-[50rem] h-[50rem] bg-[#0042A6]/30 rounded-full blur-[160px] pointer-events-none mix-blend-screen -z-10">
+        </div>
+
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
+
+            <div class="flex flex-col items-center text-center mb-16 md:mb-24">
+                <span
+                    class="scroll-fade-up font-mono text-brand-yellow tracking-[0.3em] uppercase text-xs font-bold mb-4 flex items-center gap-4">
+                    <span class="w-12 h-[1px] bg-brand-yellow/50"></span>
+                    FROTA DE ALTA PERFORMANCE
+                    <span class="w-12 h-[1px] bg-brand-yellow/50"></span>
+                </span>
+                <h2
+                    class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-white mb-6 leading-tight tracking-tight">
+                    MÁQUINAS QUE <br> <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-600">NÃO
+                        PARAM.</span>
+                </h2>
+                <p class="scroll-fade-up text-gray-400 max-w-2xl text-lg font-light">
+                    Equipamentos pesados 100% revisados. Locação expressa para manter sua obra no ritmo máximo, sem
+                    surpresas e sem atrasos.
+                </p>
+            </div>
+
+            <!-- Grid de Equipamentos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+
+                <!-- Card 1: Martelete -->
+                <div class="scroll-fade-up card-tech group cursor-pointer flex flex-col justify-between"
+                    style="padding: 2.5rem;">
+                    <div class="relative z-10 flex-1 flex flex-col">
+                        <div class="card-icon-tech"
+                            style="width: 4rem; height: 4rem; font-size: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+                            <i class="ph-light ph-hammer text-brand-yellow"></i>
+                        </div>
+
+                        <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Marteletes</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                            Rompedores e perfuradores classe A+. Potência bruta para demolição controlada.
+                        </p>
+
+                        <div
+                            class="flex items-center text-xs font-mono font-bold text-white uppercase tracking-widest mt-auto w-full">
+                            <span>VER MODELOS</span>
+                            <i
+                                class="ph-bold ph-arrow-right ml-auto text-brand-yellow group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Betoneiras -->
+                <div class="scroll-fade-up card-tech group cursor-pointer flex flex-col justify-between"
+                    style="padding: 2.5rem; transition-delay: 100ms;">
+                    <div class="relative z-10 flex-1 flex flex-col">
+                        <div class="card-icon-tech"
+                            style="width: 4rem; height: 4rem; font-size: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+                            <i class="ph-light ph-drop text-brand-yellow"></i>
+                        </div>
+
+                        <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Betoneiras</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                            Mistura homogênea e contínua. Equipamentos robustos para grandes volumes.
+                        </p>
+
+                        <div
+                            class="flex items-center text-xs font-mono font-bold text-white uppercase tracking-widest mt-auto w-full">
+                            <span>VER MODELOS</span>
+                            <i
+                                class="ph-bold ph-arrow-right ml-auto text-brand-yellow group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Compactadores -->
+                <div class="scroll-fade-up card-tech group cursor-pointer flex flex-col justify-between"
+                    style="padding: 2.5rem; transition-delay: 200ms;">
+                    <div class="relative z-10 flex-1 flex flex-col">
+                        <div class="card-icon-tech"
+                            style="width: 4rem; height: 4rem; font-size: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+                            <i class="ph-light ph-engine text-brand-yellow"></i>
+                        </div>
+
+                        <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Compactadores</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                            Alto impacto de solo. Sapo e placa vibratória 100% revisados e abastecidos.
+                        </p>
+
+                        <div
+                            class="flex items-center text-xs font-mono font-bold text-white uppercase tracking-widest mt-auto w-full">
+                            <span>VER MODELOS</span>
+                            <i
+                                class="ph-bold ph-arrow-right ml-auto text-brand-yellow group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Andaimes -->
+                <div class="scroll-fade-up card-tech group cursor-pointer flex flex-col justify-between"
+                    style="padding: 2.5rem; transition-delay: 300ms;">
+                    <div class="relative z-10 flex-1 flex flex-col">
+                        <div class="card-icon-tech"
+                            style="width: 4rem; height: 4rem; font-size: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+                            <i class="ph-light ph-squares-four text-brand-yellow"></i>
+                        </div>
+
+                        <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Andaimes</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                            Estruturas tubulares de montagem rápida. Foco em estabilidade e segurança.
+                        </p>
+
+                        <div
+                            class="flex items-center text-xs font-mono font-bold text-white uppercase tracking-widest mt-auto w-full">
+                            <span>VER MODELOS</span>
+                            <i
+                                class="ph-bold ph-arrow-right ml-auto text-brand-yellow group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 3ª DOBRA: DIFERENCIAIS E CTA WHATSAPP -->
+    <section id="diferenciais" class="relative py-24 md:py-32 z-10 border-t border-brand-yellow/10 bg-transparent">
+
+        <!-- Glow Effect Behind CTA (Refração de Vidro) -->
+        <div
+            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-[900px] h-[600px] bg-brand-yellow/15 rounded-[100%] blur-[140px] pointer-events-none mix-blend-screen -z-10">
+        </div>
+
+        <div class="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
+            <div
+                class="scroll-fade-up card-tech group flex flex-col lg:flex-row items-center justify-between gap-12 !p-10 lg:!p-20 !rounded-3xl max-w-6xl mx-auto">
+
+                <!-- Left Text: Diferenciais -->
+                <div class="flex-1 text-center lg:text-left">
+                    <span
+                        class="scroll-fade-up font-mono text-brand-yellow tracking-[0.3em] uppercase text-xs font-bold mb-6 flex items-center justify-center lg:justify-start gap-4">
+                        <span class="w-8 h-[1px] bg-brand-yellow/50"></span>
+                        O PRÓXIMO NÍVEL
+                    </span>
+                    <h2
+                        class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-white mb-6 leading-tight tracking-tight">
+                        SUA OBRA <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-600">SEM
+                            PAUSAS.</span>
+                    </h2>
+                    <p class="scroll-fade-up text-gray-400 text-lg font-light mb-8 max-w-xl mx-auto lg:mx-0">
+                        Não alugamos apenas máquinas. Entregamos produtividade brutal com suporte técnico altamente
+                        responsivo e substituição expressa.
+                    </p>
+
+                    <ul class="scroll-fade-up flex flex-col gap-4 text-left max-w-md mx-auto lg:mx-0">
+                        <li class="flex items-center gap-4 text-gray-300">
+                            <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
+                            <span class="font-sans font-semibold">Substituição Imediata em caso de falha</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-300">
+                            <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
+                            <span class="font-sans font-semibold">Manutenção preventiva 100% inclusa</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-gray-300">
+                            <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
+                            <span class="font-sans font-semibold">Contratos super flexíveis (Diária/Mensal)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Right: WhatsApp CTA -->
+                <div class="w-full lg:w-auto scroll-fade-up flex flex-col items-center">
+                    <div class="relative group/btn w-full sm:w-auto">
+                        <!-- Glow behind button -->
+                        <div
+                            class="absolute -inset-1 bg-brand-yellow/30 rounded-lg blur-lg group-hover/btn:bg-brand-yellow/50 transition duration-500">
+                        </div>
+
+                        <a href="https://wa.me/5511999999999" target="_blank"
+                            class="relative flex flex-col sm:flex-row items-center justify-center gap-4 bg-brand-yellow text-black font-sans font-extrabold text-lg px-8 py-6 rounded-xl transform transition-all duration-300 group-hover/btn:scale-105 group-hover/btn:-translate-y-1">
+                            <i class="ph-fill ph-whatsapp text-4xl"></i>
+                            <div class="text-center sm:text-left">
+                                <span
+                                    class="block text-[0.65rem] font-mono font-bold tracking-widest text-black/70 mb-1">FALAR
+                                    COM CONSULTOR</span>
+                                <span class="block text-xl uppercase">ALUGAR AGORA</span>
+                            </div>
+                        </a>
+                    </div>
+                    <p class="mt-6 text-xs font-mono text-gray-500 tracking-widest uppercase text-center">
+                        Orçamento Rápido via WhatsApp
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. SCRIPTS (GSAP & PARTICLES) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // --- 4.1. Animações de Entrada (GSAP) ---
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+            // Corrige a visibilidade
+            gsap.set(".gsap-rev", { visibility: "visible" });
+
+            // Stagger Fade-up nos textos
+            const fadeUpElements = document.querySelectorAll(".gsap-rev[data-anim='fade-up']");
+            tl.fromTo(fadeUpElements,
+                { opacity: 0, y: 40, filter: "blur(5px)" },
+                { opacity: 1, y: 0, filter: "blur(0px)", clearProps: "filter", duration: 1.2, stagger: 0.15 },
+                "+=0.2"
+            );
+
+            // Animação da Imagem da Direita
+            const fadeInImage = document.querySelector(".gsap-rev[data-anim='fade-in']");
+            tl.fromTo(fadeInImage,
+                { opacity: 0, scale: 0.95, x: 40 },
+                { opacity: 1, scale: 1, x: 0, duration: 1.5, ease: "back.out(1.2)" },
+                "-=1.0"
+            );
+
+            // Animação genérica baseada em Seção (Staggers Dinâmicos)
+            const secoes = document.querySelectorAll("section");
+            secoes.forEach(sec => {
+                const textos = sec.querySelectorAll(".scroll-fade-up:not(.card-tech)");
+                if (textos.length > 0) {
+                    gsap.fromTo(textos,
+                        { opacity: 0, y: 40, filter: "blur(5px)" },
+                        {
+                            scrollTrigger: {
+                                trigger: sec,
+                                start: "top 80%",
+                                toggleActions: "play none none reverse"
+                            },
+                            opacity: 1, y: 0, filter: "blur(0px)", clearProps: "all",
+                            duration: 1.2, stagger: 0.15, ease: "power3.out"
+                        }
+                    );
+                }
+
+                const cards = sec.querySelectorAll(".card-tech.scroll-fade-up");
+                if (cards.length > 0) {
+                    gsap.fromTo(cards,
+                        { opacity: 0, y: 60, scale: 0.95, filter: "blur(5px)" },
+                        {
+                            scrollTrigger: {
+                                trigger: sec,
+                                start: "top 80%",
+                                toggleActions: "play none none reverse"
+                            },
+                            opacity: 1, y: 0, scale: 1, filter: "blur(0px)", clearProps: "all",
+                            duration: 1.2, stagger: 0.15, ease: "back.out(1.2)"
+                        }
+                    );
+                }
+            });
+
+            /*************************************************
+             * INTERACTIVE BACKGROUND CANVAS E GRID
+             *************************************************/
+            const canvas = document.getElementById('interactive-bg');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let width, height, particles = [];
+                const mouse = { x: -1000, y: -1000 };
+
+                function initCanvas() {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                    particles = [];
+                    const particlesCount = Math.floor((width * height) / 10000);
+                    for (let i = 0; i < particlesCount; i++) {
+                        particles.push({
+                            x: Math.random() * width,
+                            y: Math.random() * height,
+                            vx: (Math.random() - 0.5) * 0.5,
+                            vy: (Math.random() - 0.5) * 0.5,
+                            radius: Math.random() * 2.5 + 1.2,
+                            color: Math.random() > 0.8 ? 'rgba(238, 186, 0, 0.8)' : 'rgba(0, 102, 255, 0.5)'
+                        });
+                    }
+                }
+
+                function animateCanvas() {
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach(p => {
+                        p.x += p.vx; p.y += p.vy;
+                        if (p.x < 0 || p.x > width) p.vx *= -1;
+                        if (p.y < 0 || p.y > height) p.vy *= -1;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.fill();
+
+                        const dx = mouse.x - p.x;
+                        const dy = mouse.y - p.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 200) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            const opacity = 1 - (dist / 200);
+                            ctx.strokeStyle = `rgba(0, 102, 255, ${opacity * 0.8})`;
+                            ctx.lineWidth = 1.5;
+                            ctx.stroke();
+
+                            p.x += dx * 0.01;
+                            p.y += dy * 0.01;
+                        }
+                    });
+                    requestAnimationFrame(animateCanvas);
+                }
+
+                window.addEventListener('resize', initCanvas);
+                initCanvas();
+                animateCanvas();
+
+                const html = document.documentElement;
+                window.addEventListener('mousemove', (e) => {
+                    mouse.x = e.clientX;
+                    mouse.y = e.clientY;
+                    const x = (e.clientX / window.innerWidth) * 100;
+                    const y = (e.clientY / window.innerHeight) * 100;
+                    html.style.setProperty('--mouse-x', `${x}%`);
+                    html.style.setProperty('--mouse-y', `${y}%`);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

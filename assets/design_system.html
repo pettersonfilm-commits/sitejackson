@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="smooth-scroll">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design System - Martelete Rental Premium</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           1. DESIGN TOKENS (Cores e Tipografia Fornecidas)
+           ========================================================================== */
+        @font-face {
+            font-family: 'Lastica';
+            src: local('Lastica'), local('LASTICA'), url('https://fonts.cdnfonts.com/s/72225/Lastica.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            /* Branding Colors */
+            --brand-blue: #00275E;   /* Azul Principal */
+            --brand-yellow: #EEBA00; /* Amarelo Secundário */
+            --brand-black: #343532;  /* Preto/Cinza Escuro Secundário */
+
+            /* Tech/Semantic Colors */
+            --primary: var(--brand-blue);
+            --primary-light: #0042A6;
+            --primary-glow: rgba(0, 39, 94, 0.8);
+            --primary-mute: rgba(0, 39, 94, 0.3);
+
+            --accent: var(--brand-yellow);
+            --accent-hover: #FFD433;
+            --accent-glow: rgba(238, 186, 0, 0.8);
+            --accent-mute: rgba(238, 186, 0, 0.2);
+
+            /* Theme Colors - Focado no Azul */
+            --bg-deep: #000B1A; /* Fundo hiper profundo azulado */
+            --surface-1: #001533; /* Cards de primeiro nível */
+            --surface-2: rgba(0, 39, 94, 0.2); /* Cards de segundo nível */
+            
+            --border-tech: rgba(0, 66, 166, 0.4);
+            --border-glow: rgba(238, 186, 0, 0.5);
+
+            --text-main: #F0F6FF; /* Branco gelo levemente azulado */
+            --text-muted: #8AA4C4;
+            --text-inverse: #000B1A;
+
+            /* Typography */
+            --font-display: 'Lastica', 'Arial Black', sans-serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+            /* Type Scale */
+            --fs-h1: clamp(3rem, 8vw, 7rem);
+            --fs-h2: clamp(2rem, 5vw, 4rem);
+            --fs-h3: clamp(1.5rem, 3vw, 2.5rem);
+            --fs-h4: 1.75rem;
+            --fs-h5: 1.25rem;
+            --fs-h6: 1rem;
+            --fs-body-lg: 1.125rem;
+            --fs-body: 1rem;
+            --fs-body-sm: 0.875rem;
+            --fs-caption: 0.75rem;
+
+            /* Transitions */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-base: 0.4s var(--ease-out-expo);
+
+            /* Shadows & Tech Glitch */
+            --shadow-glow: 0 0 20px var(--accent-glow);
+            --shadow-blue: 0 0 40px var(--primary-glow);
+            --shadow-surface: 0 15px 35px rgba(0, 0, 0, 0.6);
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --radius-xl: 32px;
+        }
+
+        /* ==========================================================================
+           2. BASE RESET E SCROLL
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html.smooth-scroll { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection { background-color: var(--accent); color: var(--text-inverse); }
+
+        ul, ol { list-style: none; }
+        a { text-decoration: none; color: inherit; }
+        button { border: none; background: none; font-family: inherit; cursor: pointer; }
+        img { max-width: 100%; display: block; }
+
+        /* ==========================================================================
+           3. INTERACTIVE BACKGROUND (TECH CANVAS & GRID)
+           ========================================================================== */
+        #interactive-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%, #001A3D 0%, #000B1A 100%);
+        }
+
+        .tech-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(rgba(0, 66, 166, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 66, 166, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 60%);
+            -webkit-mask-image: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 60%);
+            opacity: 0.5;
+            transition: opacity var(--transition-base);
+        }
+
+        /* Ambient Glow Objects */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: var(--brand-blue);
+            filter: blur(150px);
+            opacity: 0.3;
+            top: 10%; right: -10%;
+            animation: pulse-blue 8s infinite alternate var(--ease-out-expo);
+        }
+        
+        .ambient-glow.yellow {
+            background: var(--accent);
+            top: auto; bottom: 0; left: -10%;
+            width: 400px;
+            height: 400px;
+            opacity: 0.05;
+            animation: pulse-yellow 10s infinite alternate cubic-bezier(0.5, 0, 0.5, 1);
+        }
+
+        @keyframes pulse-blue {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.2; }
+            100% { transform: scale(1.4) translate(-100px, 100px); opacity: 0.4; }
+        }
+        @keyframes pulse-yellow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.03; }
+            100% { transform: scale(1.5) translate(100px, -50px); opacity: 0.08; }
+        }
+
+        /* ==========================================================================
+           4. LAYOUT & CONTAINERS
+           ========================================================================== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 2rem; }
+        }
+
+        section { padding: 8rem 0; position: relative; }
+
+        .section-header { margin-bottom: 4rem; position: relative; }
+
+        .section-subtitle {
+            font-family: var(--font-mono);
+            font-size: var(--fs-caption);
+            letter-spacing: 0.3em;
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+        
+        .section-subtitle::before {
+            content: ''; width: 40px; height: 1px;
+            background-color: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: var(--fs-h2);
+            line-height: 1.1;
+            color: var(--text-main);
+            letter-spacing: 0.02em;
+        }
+
+        /* ==========================================================================
+           5. TIPOGRAFIA CLASSES
+           ========================================================================== */
+        .t-display-1 { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 0.95; letter-spacing: -0.02em; }
+        .t-display-2 { font-family: var(--font-display); font-size: var(--fs-h2); line-height: 1.1; }
+        
+        .t-h4 { font-family: var(--font-sans); font-size: var(--fs-h4); font-weight: 700; letter-spacing: -0.01em;}
+        .t-h5 { font-family: var(--font-mono); font-size: var(--fs-h5); font-weight: 700; color: var(--accent); }
+
+        .t-body-lg { font-size: var(--fs-body-lg); font-weight: 300; color: var(--text-muted); }
+        .t-body { font-size: var(--fs-body); font-weight: 400; color: var(--text-muted); }
+        .t-body-sm { font-size: var(--fs-body-sm); font-weight: 400; color: var(--text-muted); }
+        
+        .t-caption { font-family: var(--font-mono); font-size: var(--fs-caption); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+
+        .text-accent { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .text-primary { color: #4DA3FF; text-shadow: 0 0 10px var(--primary-glow); }
+
+        /* ==========================================================================
+           6. COMPONENTES: BOTOES (INTERATIVOS & TECNOLÓGICOS)
+           ========================================================================== */
+        .btn-mag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.25rem 3rem;
+            font-family: var(--font-mono);
+            font-size: var(--fs-body-sm);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            position: relative;
+            background: transparent;
+            color: var(--text-main);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1;
+        }
+
+        .btn-mag::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 1px solid var(--border-tech);
+            border-radius: var(--radius-sm);
+            transition: all 0.4s var(--ease-out-expo);
+            z-index: -2;
+            background: rgba(0, 21, 51, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Foco e Hover State */
+        .btn-mag:hover {
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .btn-mag:hover::after {
+            border-color: var(--accent);
+            box-shadow: inset 0 0 20px rgba(238, 186, 0, 0.1), 0 0 20px rgba(238, 186, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Botão Primário Tech (Fundo Sólido Animado) */
+        .btn-primary-tech {
+            background: var(--brand-blue);
+            color: var(--text-main);
+            border: 1px solid var(--primary-light);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem 3rem;
+            font-family: var(--font-mono);
+            font-size: var(--fs-body-sm);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: all 0.4s var(--ease-out-expo);
+            z-index: 1;
+        }
+
+        .btn-primary-tech::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: skewX(-20deg);
+            z-index: -1;
+            transition: 0s;
+        }
+
+        .btn-primary-tech:hover {
+            background: var(--primary-light);
+            box-shadow: 0 4px 30px var(--primary-light);
+            transform: translateY(-3px);
+            color: var(--white);
+        }
+
+        .btn-primary-tech:hover::before {
+            left: 200%;
+            transition: left 0.6s var(--ease-out-expo);
+        }
+
+        /* Icon Button Tech */
+        .btn-icon-tech {
+            width: 56px; height: 56px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: var(--surface-1);
+            border: 1px solid var(--border-tech);
+            color: var(--text-main);
+            font-size: 1.5rem;
+            transition: all 0.4s var(--ease-elastic);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-icon-tech:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.15) rotate(10deg);
+        }
+
+        /* ==========================================================================
+           7. COMPONENTES: CARDS (GLOW ON HOVER)
+           ========================================================================== */
+        .card-tech {
+            background: var(--surface-1);
+            border: 1px solid var(--border-tech);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--ease-out-expo);
+            z-index: 1;
+        }
+
+        /* Glow effect tracing the border */
+        .card-tech::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--accent) 0%, transparent 50%, var(--primary-light) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s var(--ease-out-expo);
+            pointer-events: none;
+        }
+
+        .card-tech:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 11, 26, 0.8), 0 0 20px var(--primary-glow);
+            background: #001940;
+        }
+
+        .card-tech:hover::before { opacity: 1; }
+
+        .card-icon-tech {
+            width: 64px; height: 64px;
+            border-radius: var(--radius-md);
+            background: rgba(0, 39, 94, 0.5);
+            border: 1px solid var(--border-tech);
+            color: #4DA3FF;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.5s var(--ease-elastic);
+        }
+
+        .card-tech:hover .card-icon-tech {
+            background: var(--accent-mute);
+            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: inset 0 0 15px var(--accent-glow), 0 0 15px var(--accent-glow);
+            transform: scale(1.1);
+        }
+
+        .card-title { color: var(--text-main); margin-bottom: 1rem; }
+        .card-desc { color: var(--text-muted); font-size: var(--fs-body-sm); }
+
+        /* ==========================================================================
+           8. COMPONENTES: BADGES & INPUTS
+           ========================================================================== */
+        .badge-tech {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4em 1em;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: var(--radius-sm);
+            background: rgba(0, 66, 166, 0.2);
+            color: #82B3FF;
+            border: 1px solid var(--border-tech);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 66, 166, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .badge-tech.accent {
+            background: var(--accent-mute);
+            color: var(--accent);
+            border-color: rgba(238, 186, 0, 0.4);
+            box-shadow: 0 0 10px rgba(238, 186, 0, 0.2);
+        }
+        
+        .badge-tech:hover {
+            filter: brightness(1.3);
+            text-shadow: 0 0 5px currentColor;
+        }
+
+        .input-group {
+            display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; position: relative;
+        }
+
+        .input-label {
+            font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--text-muted); font-weight: 600;
+        }
+
+        .input-field-tech {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            background: rgba(0, 11, 26, 0.6);
+            border: 1px solid var(--border-tech);
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            font-size: var(--fs-body-sm);
+            transition: all 0.3s var(--ease-out-expo);
+            outline: none;
+        }
+
+        .input-field-tech:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(238, 186, 0, 0.15), inset 0 0 10px rgba(238, 186, 0, 0.05);
+            background: rgba(0, 21, 51, 0.8);
+        }
+        
+        .input-field-tech::placeholder { color: #4A6585; }
+
+        /* ==========================================================================
+           9. NAV & HERO
+           ========================================================================== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            padding: 1.5rem 4rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+            transition: all var(--transition-base);
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 11, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-tech);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar-brand {
+            font-family: var(--font-display); font-size: 1.5rem; color: var(--text-main);
+            display: flex; align-items: center; gap: 0.75rem; text-shadow: 0 0 10px var(--primary-glow);
+        }
+        .navbar-brand span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+
+        .navbar-links { display: flex; gap: 2.5rem; list-style: none; }
+        .navbar-links a {
+            font-family: var(--font-mono); font-size: var(--fs-caption);
+            font-weight: 700; color: var(--text-muted);
+            transition: all 0.3s; position: relative;
+        }
+        .navbar-links a:hover { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+
+        .hero {
+            min-height: 100vh;
+            display: flex; align-items: center; padding-top: 5rem;
+            position: relative; z-index: 1;
+        }
+
+        .hero-content { max-width: 900px; }
+
+        .hero-title { margin-bottom: 1.5rem; }
+        .hero-title .highlight {
+            color: transparent; -webkit-text-stroke: 1.5px var(--accent);
+            display: block; position: relative;
+        }
+        
+        /* Glitch or glow text on solid */
+        .hero-title .solid {
+            color: var(--brand-blue);
+            text-shadow: 0 0 20px rgba(0, 39, 94, 0.8), 2px 2px 0px var(--accent);
+        }
+
+        .hero-desc {
+            font-size: var(--fs-body-lg); color: var(--text-muted);
+            margin-bottom: 3rem; max-width: 600px;
+            border-left: 2px solid var(--accent);
+            padding-left: 1.5rem; background: linear-gradient(90deg, rgba(238,186,0,0.05), transparent);
+            padding-block: 0.5rem;
+        }
+
+        .hero-actions { display: flex; gap: 2rem; align-items: center; }
+
+        .ds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Color Blocks */
+        .color-swatch-tech {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-tech);
+            display: flex; flex-direction: column;
+            background: var(--surface-1);
+            transition: all 0.4s var(--ease-out-expo);
+        }
+        .color-swatch-tech:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .color-view {
+            height: 140px; display: flex; align-items: flex-end; padding: 1.5rem;
+            font-family: var(--font-mono); font-size: var(--fs-body); font-weight: 700;
+        }
+        .color-info { padding: 1.5rem; }
+        .color-name { font-weight: 700; font-size: var(--fs-body-lg); margin-bottom: 0.25rem; font-family: var(--font-display); letter-spacing: 0.05em; }
+        .color-role { font-size: var(--fs-caption); font-family: var(--font-mono); color: var(--text-muted); }
+
+        /* Typography Block */
+        .type-spec {
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--border-tech);
+            display: grid; grid-template-columns: 250px 1fr; align-items: center; gap: 2rem;
+            transition: all 0.3s;
+        }
+        .type-spec:hover {
+            background: linear-gradient(90deg, rgba(0,66,166,0.1), transparent);
+            padding-left: 1rem;
+        }
+        .type-label { font-family: var(--font-mono); font-size: var(--fs-caption); color: var(--text-muted); }
+        .type-label span { color: var(--accent); display: block; margin-top: 5px;}
+
+        /* UTILS */
+        .gsap-reveal { visibility: hidden; }
+        .brand-black-bg { background: var(--brand-black); }
+    </style>
+</head>
+<body>
+
+    <!-- INTERACTIVE BACKGROUNDS -->
+    <canvas id="interactive-bg"></canvas>
+    <div class="tech-grid"></div>
+    <div class="ambient-glow"></div>
+    <div class="ambient-glow yellow"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="navbar-brand">
+            <iconify-icon icon="solar:hamburger-menu-linear" width="24" class="text-accent"></iconify-icon>
+            ROTO<span>RENT</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="#hero">01. PREVIEW</a></li>
+            <li><a href="#typography">02. TYPOGRAPHY</a></li>
+            <li><a href="#colors">03. COLORS</a></li>
+            <li><a href="#components">04. INTERFACE</a></li>
+        </ul>
+        <button class="btn-primary-tech">
+            <span>Deploy</span>
+            <iconify-icon icon="solar:rocket-line-duotone" width="20"></iconify-icon>
+        </button>
+    </nav>
+
+    <!-- 01. HERO SECTION -->
+    <section class="hero" id="hero">
+        <div class="container hero-content">
+            <div class="section-subtitle gsap-reveal" data-delay="0.2">[ SYS.INITIALIZE ]</div>
+            <h1 class="t-display-1 hero-title">
+                <span class="gsap-reveal" data-delay="0.4">PRO FORCE</span>
+                <span class="highlight gsap-reveal" data-delay="0.6">MARTELETE</span>
+                <span class="solid gsap-reveal" data-delay="0.8">RENTAL CORE</span>
+            </h1>
+            <p class="hero-desc gsap-reveal" data-delay="1.0">
+                Uma fusão de poder, tecnologia bruta e design focado no azul industrial ("Brand Blue"). O novo sistema alinha impacto estético pesado com performance máxima via interações magnéticas.
+            </p>
+            <div class="hero-actions gsap-reveal" data-delay="1.2">
+                <button class="btn-primary-tech mag-btn">
+                    <span>INICIAR SISTEMA</span>
+                    <iconify-icon icon="solar:power-bold" width="20"></iconify-icon>
+                </button>
+                <button class="btn-mag mag-btn">
+                    <span>DOCUMENTAÇÃO</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02. TYPOGRAPHY -->
+    <section id="typography">
+        <div class="container">
+            <div class="section-header gsap-reveal">
+                <div class="section-subtitle">[ TYPE.SCALE ]</div>
+                <h2 class="section-title">Tipografia <span class="text-accent">Mecânica</span></h2>
+            </div>
+
+            <div class="ds-grid" style="grid-template-columns: 1fr 1fr 1fr; margin-bottom: 4rem;">
+                <div class="card-tech gsap-stagger">
+                    <h5 class="t-h5" style="margin-bottom: 1rem; font-family: var(--font-display); font-size: 2rem; color: var(--text-main);">LASTICA</h5>
+                    <p class="t-caption text-accent">PRIMARY DISPLAY FONT</p>
+                    <p class="t-body-sm" style="margin-top: 1rem">Peso industrial, largura não-convencional. Usada nos cabeçalhos principais do sistema.</p>
+                </div>
+                <div class="card-tech gsap-stagger">
+                    <h5 class="t-h5" style="margin-bottom: 1rem; font-family: var(--font-sans); font-size: 2rem; color: var(--text-main);">Inter</h5>
+                    <p class="t-caption text-primary">SANS-SERIF UI</p>
+                    <p class="t-body-sm" style="margin-top: 1rem">Leitura neutra, perfeita para parágrafos extensos e base do corpo.</p>
+                </div>
+                <div class="card-tech gsap-stagger">
+                    <h5 class="t-h5" style="margin-bottom: 1rem; font-family: var(--font-mono); font-size: 1.5rem; color: var(--text-main);">JetBrains Mono</h5>
+                    <p class="t-caption" style="color: #82B3FF;">TECH DETAILS & DATA</p>
+                    <p class="t-body-sm" style="margin-top: 1rem">Injetando o DNA "futurístico" e tecnológico aos micro-textos, botões e labels.</p>
+                </div>
+            </div>
+
+            <div class="card-tech gsap-reveal">
+                <div class="type-spec" style="border-top: none;">
+                    <div class="type-label">H1 Display<span>Lastica / clamp(...)</span></div>
+                    <div class="t-display-1 text-accent">IMPACTO</div>
+                </div>
+                <div class="type-spec">
+                    <div class="type-label">H2 Display<span>Lastica / clamp(...)</span></div>
+                    <div class="t-display-2">ALTA TENSÃO</div>
+                </div>
+                <div class="type-spec">
+                    <div class="type-label">Body Large<span>Inter Regular / 1.125rem</span></div>
+                    <div class="t-body-lg">Equipamentos calibrados na corrigibilidade máxima, design forjado para resistência em demolições profundas.</div>
+                </div>
+                <div class="type-spec" style="border-bottom: none;">
+                    <div class="type-label">Labels / Data<span>JetBrains Mono / 0.75rem</span></div>
+                    <div class="t-caption">SYS.STATUS: ONLINE | INVENTORY: OPTIMAL</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03. COLORS -->
+    <section id="colors">
+        <div class="container">
+            <div class="section-header gsap-reveal">
+                <div class="section-subtitle">[ COLOR.MATRIX ]</div>
+                <h2 class="section-title">Paleta <span class="text-primary">Primária</span></h2>
+            </div>
+
+            <div class="ds-grid">
+                <!-- Color 1 -->
+                <div class="color-swatch-tech gsap-stagger">
+                    <div class="color-view" style="background: var(--brand-blue); color: var(--white); box-shadow: inset 0 0 50px rgba(0,0,0,0.5);">#00275E</div>
+                    <div class="color-info">
+                        <div class="color-name">BRAND BLUE</div>
+                        <div class="color-role">DNA da marca. Foco principal de toda a atmosfera, glows tecnológicos e cards.</div>
+                    </div>
+                </div>
+                <!-- Color 2 -->
+                <div class="color-swatch-tech gsap-stagger">
+                    <div class="color-view" style="background: var(--brand-yellow); color: var(--brand-black); box-shadow: inset 0 0 50px rgba(255,255,255,0.2);">#EEBA00</div>
+                    <div class="color-info">
+                        <div class="color-name">BRAND YELLOW</div>
+                        <div class="color-role">Cor de energia e estado de alerta. Utilizado para chamadas à ação magnéticas e hovers intensos.</div>
+                    </div>
+                </div>
+                <!-- Color 3 -->
+                <div class="color-swatch-tech gsap-stagger">
+                    <div class="color-view brand-black-bg" style="color: var(--white); border-bottom: 1px solid var(--border-tech);">#343532</div>
+                    <div class="color-info">
+                        <div class="color-name">BRAND BLACK</div>
+                        <div class="color-role">Um preto/cinza industrial denso, usado para quebra de contraste e fundos secundários.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 04. COMPONENTS -->
+    <section id="components">
+        <div class="container">
+            <div class="section-header gsap-reveal">
+                <div class="section-subtitle">[ UI.MODULES ]</div>
+                <h2 class="section-title">Interface <span class="text-accent">Dinâmica</span></h2>
+            </div>
+
+            <div class="ds-grid" style="grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));">
+                
+                <!-- Botões e Tags -->
+                <div class="card-tech gsap-stagger" style="display: flex; flex-direction: column; gap: 2rem;">
+                    <h4 class="t-h5">INTERATIVE BUTTONS</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center;">
+                        <button class="btn-primary-tech mag-btn">Execute .SYS</button>
+                        <button class="btn-mag mag-btn">Cancel</button>
+                    </div>
+                    <div style="display: flex; gap: 1.5rem; margin-top: 1rem;">
+                        <button class="btn-icon-tech mag-btn"><iconify-icon icon="solar:settings-bold-duotone"></iconify-icon></button>
+                        <button class="btn-icon-tech mag-btn"><iconify-icon icon="solar:shield-warning-bold-duotone"></iconify-icon></button>
+                        <button class="btn-icon-tech mag-btn"><iconify-icon icon="solar:battery-charge-bold-duotone"></iconify-icon></button>
+                    </div>
+                    <div style="margin-top: 1rem; border-top: 1px solid var(--border-tech); padding-top: 2rem;">
+                        <span class="badge-tech">SYS: ACTIVE</span>
+                        <span class="badge-tech accent" style="margin-left: 1rem;">POWER: 1200W</span>
+                    </div>
+                </div>
+
+                <!-- Forms / Data -->
+                <div class="card-tech gsap-stagger">
+                    <h4 class="t-h5" style="margin-bottom: 2rem;">DATA ENTRY MODULE</h4>
+                    <div class="input-group">
+                        <label class="input-label">[ CALIBRAR EQUIPAMENTO ]</label>
+                        <input type="text" class="input-field-tech" placeholder="ID Martelete. ex: SDS-MAX-90">
+                    </div>
+                    <div class="input-group" style="margin-top: 1.5rem;">
+                        <label class="input-label">[ PROTOCOLO DE USO ]</label>
+                        <input type="password" class="input-field-tech" placeholder="******">
+                    </div>
+                    <button class="btn-mag mag-btn" style="width: 100%; margin-top: 1rem;">AUTENTICAR</button>
+                </div>
+
+                <!-- Componente de Destaque -->
+                <div class="card-tech gsap-stagger" style="grid-column: 1 / -1; display: grid; grid-template-columns: 100px 1fr auto; gap: 2rem; align-items: center;">
+                    <div class="card-icon-tech" style="width: 100px; height: 100px; margin: 0; font-size: 3rem; background: var(--bg-deep);">
+                        <iconify-icon icon="solar:screencast-2-bold-duotone"></iconify-icon>
+                    </div>
+                    <div>
+                        <h3 class="t-h4" style="color: var(--text-main); margin-bottom: 0.5rem; font-family: var(--font-display);">MARTELETE DEMOLIDOR 30KG</h3>
+                        <p class="t-caption text-primary" style="margin-bottom: 0.5rem;">ALTO IMPACTO | 220V</p>
+                        <p class="t-body-sm">A solução definitiva para perfurar lajes e pisos maciços. Inclui maleta tecnológica com trava magnética.</p>
+                    </div>
+                    <button class="btn-primary-tech mag-btn" style="padding: 1rem 2rem;">
+                        <span>RENTAL LOG</span>
+                        <iconify-icon icon="solar:arrow-right-linear" width="20"></iconify-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Javascript para Background Interativo e Magnetic Buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            /*************************************************
+             * INTERACTIVE BACKGROUND CANVAS (PARTÍCULAS)
+             *************************************************/
+            const canvas = document.getElementById('interactive-bg');
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+            const mouse = { x: -1000, y: -1000 };
+
+            function initCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                particles = [];
+                const particlesCount = Math.floor((width * height) / 15000);
+                for(let i=0; i<particlesCount; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        radius: Math.random() * 2 + 0.5,
+                        // Mix de azul (#0042A6) e amarelo nas partículas
+                        color: Math.random() > 0.8 ? 'rgba(238, 186, 0, 0.4)' : 'rgba(0, 66, 166, 0.3)'
+                    });
+                }
+            }
+
+            function animateCanvas() {
+                ctx.clearRect(0, 0, width, height);
+                
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    // Bounce
+                    if(p.x < 0 || p.x > width) p.vx *= -1;
+                    if(p.y < 0 || p.y > height) p.vy *= -1;
+                    
+                    // Draw
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+
+                    // Connect to mouse
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        // A linha brilha mais forte perto do mouse
+                        const opacity = 1 - (dist / 150);
+                        ctx.strokeStyle = `rgba(0, 66, 166, ${opacity * 0.5})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        
+                        // Attraction
+                        p.x += dx * 0.01;
+                        p.y += dy * 0.01;
+                    }
+                });
+                requestAnimationFrame(animateCanvas);
+            }
+
+            window.addEventListener('resize', initCanvas);
+            initCanvas();
+            animateCanvas();
+
+            /*************************************************
+             * MOUSE MOVEMENTS (GRID E MAGNETISMO)
+             *************************************************/
+            const html = document.documentElement;
+            const magBtns = document.querySelectorAll('.mag-btn');
+
+            window.addEventListener('mousemove', (e) => {
+                // Update Canvas Mouse
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+
+                // Update Tech Grid Mask Position via CSS Vars
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                html.style.setProperty('--mouse-x', `${x}%`);
+                html.style.setProperty('--mouse-y', `${y}%`);
+            });
+
+            // Magnetic Buttons Reativity
+            magBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    const distX = (e.clientX - centerX) * 0.3;
+                    const distY = (e.clientY - centerY) * 0.3;
+                    
+                    gsap.to(btn, {
+                        x: distX,
+                        y: distY,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                });
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        x: 0,
+                        y: 0,
+                        duration: 0.8,
+                        ease: "elastic.out(1, 0.3)"
+                    });
+                });
+            });
+
+            /*************************************************
+             * GSAP SCROLL REVEALS
+             *************************************************/
+            // Navbar Scrolled State
+            const navbar = document.getElementById('navbar');
+            ScrollTrigger.create({
+                start: "top -50",
+                onUpdate: (self) => {
+                    if (self.direction === 1) navbar.classList.add('scrolled');
+                    else if (self.progress === 0) navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Hero sequence
+            const heroTimeline = gsap.timeline();
+            document.querySelectorAll('.hero .gsap-reveal').forEach(el => {
+                heroTimeline.fromTo(el, 
+                    { opacity: 0, y: 50, filter: "blur(10px)" }, 
+                    { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, delay: parseFloat(el.getAttribute('data-delay') || 0) * 0.8, ease: "power3.out" },
+                    0
+                );
+            });
+
+            // Section Headers
+            gsap.utils.toArray('.section-header.gsap-reveal').forEach(header => {
+                gsap.fromTo(header,
+                    { opacity: 0, x: -50 },
+                    { scrollTrigger: { trigger: header, start: "top 80%" }, opacity: 1, x: 0, duration: 1, ease: "power3.out" }
+                );
+            });
+
+            // Stagger Cards / Colors
+            gsap.utils.toArray('section').forEach(section => {
+                const elements = section.querySelectorAll('.gsap-stagger');
+                if(elements.length) {
+                    gsap.fromTo(elements,
+                        { opacity: 0, scale: 0.95, y: 30 },
+                        { scrollTrigger: { trigger: section, start: "top 75%" }, opacity: 1, scale: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "back.out(1.5)" }
+                    );
+                }
+            });
+        });
+    </script>
+</body>
+</html>
