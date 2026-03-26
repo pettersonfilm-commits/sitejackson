@@ -196,31 +196,9 @@
             animation: marquee 40s linear infinite;
         }
 
-        /* Tech Canvas Background Elements */
-        #interactive-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2; pointer-events: none;
-            background: #ffffff;
-        }
-        .tech-grid {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1; pointer-events: none;
-            background-image: 
-                linear-gradient(rgba(0, 82, 204, 0.45) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 82, 204, 0.45) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 80%);
-            -webkit-mask-image: radial-gradient(ellipse at var(--mouse-x, 50%) var(--mouse-y, 50%), black 0%, transparent 80%);
-            opacity: 0.85;
-            transition: opacity 0.4s;
-        }
     </style>
 </head>
-<body class="relative min-h-screen">
-
-    <!-- 1. INTERACTIVE BACKGROUND (TECH CANVAS E GRID) -->
-    <canvas id="interactive-bg"></canvas>
-    <div class="tech-grid"></div>
+<body class="relative min-h-screen bg-white text-[#343532]">
 
     <!-- 2. NAVBAR (DASHBOARD HEADER) -->
     <header class="fixed top-0 w-full z-50 border-b border-brand-blueLight/30 bg-brand-blue/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-300">
@@ -641,76 +619,6 @@ AO SEU ALCANCE</h1>
                 }
             });
 
-            /*************************************************
-             * INTERACTIVE BACKGROUND CANVAS E GRID
-             *************************************************/
-            const canvas = document.getElementById('interactive-bg');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                let width, height, particles = [];
-                const mouse = { x: -1000, y: -1000 };
-
-                function initCanvas() {
-                    width = canvas.width = window.innerWidth;
-                    height = canvas.height = window.innerHeight;
-                    particles = [];
-                    const particlesCount = Math.floor((width * height) / 10000);
-                    for(let i=0; i<particlesCount; i++) {
-                        particles.push({
-                            x: Math.random() * width,
-                            y: Math.random() * height,
-                            vx: (Math.random() - 0.5) * 0.5,
-                            vy: (Math.random() - 0.5) * 0.5,
-                            radius: Math.random() * 2.5 + 1.2,
-                            color: Math.random() > 0.8 ? 'rgba(238, 186, 0, 0.8)' : 'rgba(0, 102, 255, 0.5)'
-                        });
-                    }
-                }
-
-                function animateCanvas() {
-                    ctx.clearRect(0, 0, width, height);
-                    particles.forEach(p => {
-                        p.x += p.vx; p.y += p.vy;
-                        if(p.x < 0 || p.x > width) p.vx *= -1;
-                        if(p.y < 0 || p.y > height) p.vy *= -1;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = p.color;
-                        ctx.fill();
-
-                        const dx = mouse.x - p.x;
-                        const dy = mouse.y - p.y;
-                        const dist = Math.sqrt(dx*dx + dy*dy);
-                        if(dist < 200) {
-                            ctx.beginPath();
-                            ctx.moveTo(p.x, p.y);
-                            ctx.lineTo(mouse.x, mouse.y);
-                            const opacity = 1 - (dist / 200);
-                            ctx.strokeStyle = `rgba(0, 102, 255, ${opacity * 0.8})`;
-                            ctx.lineWidth = 1.5;
-                            ctx.stroke();
-                            
-                            p.x += dx * 0.01;
-                            p.y += dy * 0.01;
-                        }
-                    });
-                    requestAnimationFrame(animateCanvas);
-                }
-
-                window.addEventListener('resize', initCanvas);
-                initCanvas();
-                animateCanvas();
-
-                const html = document.documentElement;
-                window.addEventListener('mousemove', (e) => {
-                    mouse.x = e.clientX;
-                    mouse.y = e.clientY;
-                    const x = (e.clientX / window.innerWidth) * 100;
-                    const y = (e.clientY / window.innerHeight) * 100;
-                    html.style.setProperty('--mouse-x', `${x}%`);
-                    html.style.setProperty('--mouse-y', `${y}%`);
-                });
-            }
         });
     </script>
 </body>
