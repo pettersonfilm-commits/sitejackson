@@ -195,6 +195,31 @@
             width: max-content;
             animation: marquee 40s linear infinite;
         }
+
+        /* Attention Button Effect */
+        .btn-attention {
+            animation: attention-pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-attention::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(238, 186, 0, 0.8), transparent);
+            transform: skewX(-20deg);
+            animation: attention-shine 3s infinite;
+        }
+        @keyframes attention-shine {
+            0% { left: -100%; }
+            15% { left: 200%; }
+            100% { left: 200%; }
+        }
+        @keyframes attention-pulse {
+            0%, 100% { box-shadow: 0 0 5px 0 rgba(238, 186, 0, 0.3); }
+            50% { box-shadow: 0 0 15px 4px rgba(238, 186, 0, 0.7); }
+        }
     </style>
 </head>
 <body class="relative min-h-screen bg-white text-[#343532]">
@@ -218,7 +243,7 @@
             </a>
 
             <!-- CTA (Right aligned) -->
-            <a href="https://wa.me/61995621826" target="_blank" rel="noopener noreferrer" class="ml-auto font-mono text-[9px] md:text-[11px] font-bold tracking-[0.1em] md:tracking-[0.2em] px-4 py-2 md:px-8 md:py-3.5 border border-brand-yellow text-brand-yellow transition-all duration-400 rounded-sm flex items-center gap-2 md:gap-3 group relative z-10 bg-black/20 hover:shadow-[inset_0_0_20px_rgba(238,186,0,0.15),0_0_20px_rgba(238,186,0,0.3)] hover:scale-[1.02] backdrop-blur-sm">
+            <a href="https://wa.me/61995621826" target="_blank" rel="noopener noreferrer" class="btn-attention ml-auto font-mono text-[9px] md:text-[11px] font-bold tracking-[0.1em] md:tracking-[0.2em] px-4 py-2 md:px-8 md:py-3.5 border border-brand-yellow text-brand-yellow transition-all duration-400 rounded-sm flex items-center gap-2 md:gap-3 group relative z-10 bg-black/20 hover:scale-[1.02] backdrop-blur-sm">
                 <i class="ph-light ph-whatsapp-logo text-[1.1rem] md:text-[1.2rem] transition-all duration-400 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(238,186,0,0.8)]"></i> 
                 <span class="group-hover:drop-shadow-[0_0_8px_rgba(238,186,0,0.8)] transition-all duration-400">WHATSAPP</span>
             </a>
@@ -509,24 +534,24 @@ AO SEU ALCANCE</h1>
                         <span class="w-8 h-[1px] bg-brand-yellow/50"></span>
                         O PRÓXIMO NÍVEL
                     </span>
-                    <h2 class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-brand-black mb-6 leading-tight tracking-tight">
+                    <h2 class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-white mb-6 leading-tight tracking-tight">
                         SUA OBRA <br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-600">SEM PAUSAS.</span>
                     </h2>
-                    <p class="scroll-fade-up text-gray-600 text-lg font-light mb-8 max-w-xl mx-auto lg:mx-0">
+                    <p class="scroll-fade-up text-white/80 text-lg font-light mb-8 max-w-xl mx-auto lg:mx-0">
                         Não alugamos apenas máquinas. Entregamos produtividade brutal com suporte técnico altamente responsivo e substituição expressa.
                     </p>
                     
                     <ul class="scroll-fade-up flex flex-col gap-4 text-left max-w-md mx-auto lg:mx-0">
-                        <li class="flex items-center gap-4 text-gray-700">
+                        <li class="flex items-center gap-4 text-white">
                             <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
                             <span class="font-sans font-semibold">Substituição Imediata em caso de falha</span>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-700">
+                        <li class="flex items-center gap-4 text-white">
                             <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
                             <span class="font-sans font-semibold">Manutenção preventiva 100% inclusa</span>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-700">
+                        <li class="flex items-center gap-4 text-white">
                             <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
                             <span class="font-sans font-semibold">Contratos super flexíveis (Diária/Mensal)</span>
                         </li>
