@@ -195,10 +195,12 @@
             width: max-content;
             animation: marquee 40s linear infinite;
         }
-
     </style>
 </head>
 <body class="relative min-h-screen bg-white text-[#343532]">
+
+    <!-- INTERACTIVE TECH GRID CANVAS -->
+    <canvas id="tech-canvas" class="fixed inset-0 z-[-1] pointer-events-none opacity-[0.8]" aria-hidden="true"></canvas>
 
     <!-- 2. NAVBAR (DASHBOARD HEADER) -->
     <header class="fixed top-0 w-full z-50 border-b border-brand-blueLight/30 bg-brand-blue/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-300">
@@ -391,9 +393,7 @@ AO SEU ALCANCE</h1>
     <!-- 2ª DOBRA: EQUIPAMENTOS (SHOWCASE) -->
     <section id="equipamentos" class="relative py-24 md:py-32 z-10 border-t border-brand-yellow/10 bg-transparent">
         
-        <!-- Luzes Ambientes para Refração do Vidro -->
-        <div class="absolute top-1/4 left-0 w-[40rem] h-[40rem] bg-brand-yellow/10 rounded-full blur-[140px] pointer-events-none mix-blend-screen -z-10"></div>
-        <div class="absolute bottom-0 right-0 w-[50rem] h-[50rem] bg-[#0042A6]/30 rounded-full blur-[160px] pointer-events-none mix-blend-screen -z-10"></div>
+        <!-- Luzes Removidas para o Modo Claro -->
 
         <div class="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
             
@@ -498,8 +498,7 @@ AO SEU ALCANCE</h1>
     <!-- 3ª DOBRA: DIFERENCIAIS E CTA WHATSAPP -->
     <section id="diferenciais" class="relative py-24 md:py-32 z-10 border-t border-brand-yellow/10 bg-transparent">
         
-        <!-- Glow Effect Behind CTA (Refração de Vidro) -->
-        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-[900px] h-[600px] bg-brand-yellow/15 rounded-[100%] blur-[140px] pointer-events-none mix-blend-screen -z-10"></div>
+        <!-- Glow Removido para o Modo Claro -->
 
         <div class="max-w-[1600px] mx-auto px-6 lg:px-12 relative z-10">
             <div class="scroll-fade-up card-tech group flex flex-col lg:flex-row items-center justify-between gap-12 !p-10 lg:!p-20 !rounded-3xl max-w-6xl mx-auto">
@@ -510,24 +509,24 @@ AO SEU ALCANCE</h1>
                         <span class="w-8 h-[1px] bg-brand-yellow/50"></span>
                         O PRÓXIMO NÍVEL
                     </span>
-                    <h2 class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-white mb-6 leading-tight tracking-tight">
+                    <h2 class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-brand-black mb-6 leading-tight tracking-tight">
                         SUA OBRA <br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-600">SEM PAUSAS.</span>
                     </h2>
-                    <p class="scroll-fade-up text-gray-400 text-lg font-light mb-8 max-w-xl mx-auto lg:mx-0">
+                    <p class="scroll-fade-up text-gray-600 text-lg font-light mb-8 max-w-xl mx-auto lg:mx-0">
                         Não alugamos apenas máquinas. Entregamos produtividade brutal com suporte técnico altamente responsivo e substituição expressa.
                     </p>
                     
                     <ul class="scroll-fade-up flex flex-col gap-4 text-left max-w-md mx-auto lg:mx-0">
-                        <li class="flex items-center gap-4 text-gray-300">
+                        <li class="flex items-center gap-4 text-gray-700">
                             <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
                             <span class="font-sans font-semibold">Substituição Imediata em caso de falha</span>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-300">
+                        <li class="flex items-center gap-4 text-gray-700">
                             <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
                             <span class="font-sans font-semibold">Manutenção preventiva 100% inclusa</span>
                         </li>
-                        <li class="flex items-center gap-4 text-gray-300">
+                        <li class="flex items-center gap-4 text-gray-700">
                             <i class="ph-bold ph-check text-brand-yellow bg-brand-yellow/10 p-1 rounded-full"></i>
                             <span class="font-sans font-semibold">Contratos super flexíveis (Diária/Mensal)</span>
                         </li>
@@ -618,6 +617,70 @@ AO SEU ALCANCE</h1>
                     );
                 }
             });
+
+            // --- 4.2. Interactive Tech Grid Canvas ---
+            const canvas = document.getElementById('tech-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                const mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+                let points = [];
+
+                function initCanvas() {
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                    points = [];
+                    const spacing = 40;
+                    for (let x = 0; x <= width + spacing; x += spacing) {
+                        for (let y = 0; y <= height + spacing; y += spacing) {
+                            points.push({ x, y });
+                        }
+                    }
+                }
+
+                function animateCanvas() {
+                    ctx.clearRect(0, 0, width, height);
+
+                    mouse.x += (mouse.targetX - mouse.x) * 0.1;
+                    mouse.y += (mouse.targetY - mouse.y) * 0.1;
+
+                    points.forEach(p => {
+                        let dx = mouse.x - p.x;
+                        let dy = mouse.y - p.y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        let drawSize = 1;      // Base minimal dot size
+                        let opacity = 0.15;    // Extremely subtle base transparency
+
+                        if (dist < 120) {
+                            let force = (120 - dist) / 120;
+                            drawSize = 1 + (force * 1.5); // Swell to 2.5px
+                            opacity = 0.15 + (force * 0.5); // Bloom opacity
+                        }
+
+                        ctx.fillStyle = `rgba(107, 114, 128, ${opacity})`; // Neutral gray-500
+                        
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, drawSize, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+
+                    requestAnimationFrame(animateCanvas);
+                }
+
+                window.addEventListener('resize', initCanvas);
+                window.addEventListener('mousemove', (e) => {
+                    mouse.targetX = e.clientX;
+                    mouse.targetY = e.clientY;
+                });
+                window.addEventListener('mouseout', () => {
+                    mouse.targetX = -1000;
+                    mouse.targetY = -1000;
+                });
+
+                initCanvas();
+                animateCanvas();
+            }
 
         });
     </script>
