@@ -58,8 +58,8 @@
 
         /* Utilidades Base */
         body {
-            background-color: #000000;
-            color: #F0F6FF;
+            background-color: #ffffff;
+            color: #343532;
             overflow-x: hidden;
         }
 
@@ -78,11 +78,11 @@
 
         /* Efeito Glow Tonal » Glassmorphism */
         .glass-panel {
-            background: rgba(0, 21, 51, 0.6);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 66, 166, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(0, 11, 26, 0.8);
+            border: 1px solid rgba(0, 66, 166, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 11, 26, 0.1);
         }
 
         .glass-panel:hover {
@@ -92,13 +92,12 @@
 
         /* Card Tech (Premium Trust Badges & Showcase) */
         .card-tech {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.005) 100%);
+            background: rgba(0, 39, 94, 0.95);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-left: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 66, 166, 0.4);
+            box-shadow: 0 4px 30px rgba(0, 11, 26, 0.1);
+            color: #ffffff;
             border-radius: 16px;
             padding: 1.25rem 1.5rem;
             position: relative;
@@ -130,9 +129,9 @@
 
         .card-tech:hover {
             transform: translateY(-5px);
-            background: rgba(238, 186, 0, 0.05);
-            border-color: transparent;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.02);
+            background: rgba(0, 66, 166, 0.95);
+            border-color: rgba(238, 186, 0, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 0 20px rgba(0, 39, 94, 0.5);
         }
 
         .card-tech:hover::before { opacity: 1; }
@@ -201,7 +200,7 @@
         #interactive-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -2; pointer-events: none;
-            background: #000000;
+            background: #ffffff;
         }
         .tech-grid {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -224,12 +223,12 @@
     <div class="tech-grid"></div>
 
     <!-- 2. NAVBAR (DASHBOARD HEADER) -->
-    <header class="fixed top-0 w-full z-50 border-b border-brand-yellow/10 bg-[#000000]/40 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-all duration-300">
+    <header class="fixed top-0 w-full z-50 border-b border-brand-blueLight/30 bg-brand-blue/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-300">
         <div class="relative max-w-[1600px] mx-auto px-4 lg:px-12 py-3 md:py-4 flex justify-between items-center min-h-[60px] md:min-h-[72px]">
             
             <!-- Left Logo -->
             <a href="#" class="hidden md:flex items-center group relative z-10">
-                <img src="./assets/LOGO SEM FUNDO.png" alt="Roto Rent Ícone" class="h-8 md:h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105 filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+                <img src="./assets/LOGO SEM FUNDO branca.png" alt="Roto Rent Ícone" class="h-8 md:h-10 w-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105 filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
             </a>
 
             <!-- Logo (Centered) -->
@@ -254,12 +253,12 @@
             <div class="lg:col-span-7 flex flex-col gap-8 relative z-20">
                 
                 <!-- HEADLINE -->
-                <h1 class="font-display text-5xl lg:text-[4.5rem] leading-[0.95] tracking-tight text-white gsap-rev whitespace-pre-line" data-anim="fade-up">POTÊNCIA
+                <h1 class="font-display text-5xl lg:text-[4.5rem] leading-[0.95] tracking-tight text-brand-black gsap-rev whitespace-pre-line" data-anim="fade-up">POTÊNCIA
 <span class="text-brand-blue bg-clip-text text-transparent bg-gradient-to-r from-brand-yellow to-yellow-600 drop-shadow-[0_0_15px_rgba(238,186,0,0.6)]">INDUSTRIAL</span>
 AO SEU ALCANCE</h1>
 
                 <!-- SUBHEADLINE -->
-                <p class="font-sans text-lg lg:text-xl text-[#8AA4C4] max-w-xl font-light leading-relaxed border-l-2 border-brand-yellow pl-5 py-1 bg-gradient-to-r from-brand-yellow/5 to-transparent gsap-rev" data-anim="fade-up">
+                <p class="font-sans text-lg lg:text-xl text-gray-700 max-w-xl font-light leading-relaxed border-l-2 border-brand-yellow pl-5 py-1 bg-gradient-to-r from-brand-yellow/5 to-transparent gsap-rev" data-anim="fade-up">
                     Soluções brutas em locação de equipamentos de construção. Rentabilidade, agilidade logística e <strong>performance implacável</strong> para escalar a sua obra sem interrupções.
                 </p>
 
@@ -269,28 +268,28 @@ AO SEU ALCANCE</h1>
                         <div class="card-icon-tech"><i class="ph-duotone ph-rocket"></i></div>
                         <div>
                             <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">LOGÍSTICA</p>
-                            <p class="font-sans text-sm font-semibold">Entrega < 24h</p>
+                            <p class="font-sans text-sm font-semibold text-white">Entrega < 24h</p>
                         </div>
                     </div>
                     <div class="card-tech">
                         <div class="card-icon-tech"><i class="ph-duotone ph-sparkle"></i></div>
                         <div>
                             <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">QUALIDADE</p>
-                            <p class="font-sans text-sm font-semibold">Limpos & Novos</p>
+                            <p class="font-sans text-sm font-semibold text-white">Limpos & Novos</p>
                         </div>
                     </div>
                     <div class="card-tech">
                         <div class="card-icon-tech"><i class="ph-duotone ph-users-three"></i></div>
                         <div>
                             <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">SUPORTE</p>
-                            <p class="font-sans text-sm font-semibold">Apoio Humanizado</p>
+                            <p class="font-sans text-sm font-semibold text-white">Apoio Humanizado</p>
                         </div>
                     </div>
                     <div class="card-tech">
                         <div class="card-icon-tech"><i class="ph-duotone ph-cpu"></i></div>
                         <div>
                             <p class="font-mono text-[0.65rem] text-brand-yellow font-bold tracking-widest uppercase">TECNOLOGIA</p>
-                            <p class="font-sans text-sm font-semibold">Consultoria Técnica</p>
+                            <p class="font-sans text-sm font-semibold text-white">Consultoria Técnica</p>
                         </div>
                     </div>
                 </div>
@@ -338,17 +337,17 @@ AO SEU ALCANCE</h1>
             
         </div>
         
-        <!-- Tech Product Marquee (Faixa Amarela Full Width Garantida) -->
-        <div class="w-full relative overflow-hidden bg-brand-yellow/10 backdrop-blur-md py-4 flex shadow-[0_0_20px_rgba(238,186,0,0.2)] transition-all duration-500 hover:shadow-[0_0_50px_rgba(238,186,0,0.6)] hover:bg-brand-yellow/20 border-y border-brand-yellow/40 cursor-default z-30 gsap-rev" data-anim="fade-up">
+        <!-- Tech Product Marquee (Faixa Azul Full Width Garantida) -->
+        <div class="w-full relative overflow-hidden bg-brand-blue/10 backdrop-blur-md py-4 flex shadow-[0_0_20px_rgba(0,66,166,0.1)] transition-all duration-500 hover:shadow-[0_0_50px_rgba(0,66,166,0.2)] hover:bg-brand-blue/20 border-y border-brand-blueLight/40 cursor-default z-30 gsap-rev" data-anim="fade-up">
             
             <!-- Brilho no topo do vidro -->
-            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-yellow/50 to-transparent"></div>
+            <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-blueLight/50 to-transparent"></div>
             
             <!-- Pseudo-elementos para gradient nas pontas usando black -->
-            <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-            <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
             
-            <div class="animate-marquee flex text-brand-yellow drop-shadow-[0_0_10px_rgba(238,186,0,0.8)]">
+            <div class="animate-marquee flex text-brand-blueLight drop-shadow-[0_0_10px_rgba(0,66,166,0.3)]">
                 <!-- Bloco 1 -->
                 <div class="flex gap-12 px-6 items-center font-mono text-sm tracking-widest font-bold whitespace-nowrap">
                     <span>MARTELETE <i class="ph-fill ph-lightning px-1 opacity-70"></i></span>
@@ -426,10 +425,10 @@ AO SEU ALCANCE</h1>
                     FROTA DE ALTA PERFORMANCE
                     <span class="w-12 h-[1px] bg-brand-yellow/50"></span>
                 </span>
-                <h2 class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-white mb-6 leading-tight tracking-tight">
+                <h2 class="scroll-fade-up font-display text-3xl md:text-5xl lg:text-5xl text-brand-black mb-6 leading-tight tracking-tight">
                     MÁQUINAS QUE <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow to-yellow-600">NÃO PARAM.</span>
                 </h2>
-                <p class="scroll-fade-up text-gray-400 max-w-2xl text-lg font-light">
+                <p class="scroll-fade-up text-gray-600 max-w-2xl text-lg font-light">
                     Equipamentos pesados 100% revisados. Locação expressa para manter sua obra no ritmo máximo, sem surpresas e sem atrasos.
                 </p>
             </div>
@@ -445,7 +444,7 @@ AO SEU ALCANCE</h1>
                         </div>
                         
                         <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Marteletes</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                        <p class="text-blue-100 text-sm leading-relaxed mb-10 flex-1">
                             Rompedores e perfuradores classe A+. Potência bruta para demolição controlada.
                         </p>
                         
@@ -464,7 +463,7 @@ AO SEU ALCANCE</h1>
                         </div>
                         
                         <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Betoneiras</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                        <p class="text-blue-100 text-sm leading-relaxed mb-10 flex-1">
                             Mistura homogênea e contínua. Equipamentos robustos para grandes volumes.
                         </p>
                         
@@ -483,7 +482,7 @@ AO SEU ALCANCE</h1>
                         </div>
                         
                         <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Compactadores</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                        <p class="text-blue-100 text-sm leading-relaxed mb-10 flex-1">
                             Alto impacto de solo. Sapo e placa vibratória 100% revisados e abastecidos.
                         </p>
                         
@@ -502,7 +501,7 @@ AO SEU ALCANCE</h1>
                         </div>
                         
                         <h3 class="font-sans font-extrabold text-xl text-brand-yellow mb-3">Andaimes</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-10 flex-1">
+                        <p class="text-blue-100 text-sm leading-relaxed mb-10 flex-1">
                             Estruturas tubulares de montagem rápida. Foco em estabilidade e segurança.
                         </p>
                         
